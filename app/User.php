@@ -14,11 +14,23 @@ class User extends Authenticatable implements JWTSubject
    *
    * @var array
    */
-  protected $fillable = [
-    'firstname', 'lastname', 'email', 'password', 'phone', 'country', 'stripe_id'
-  ];
+  protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone', 'country'];
 
   protected $hidden = ['password'];
+
+
+
+
+  public function frais(){
+    return $this->hasMany(Frais::class);
+  }
+
+  public function roles(){
+    return $this->belongsToMany(Role::class , 'user_role');
+  }
+
+  
+
 
 
 
