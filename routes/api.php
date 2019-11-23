@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,21 +20,19 @@ Route::post('auth/signup',     'AuthController@signup');
 Route::post('auth/login',      'AuthController@login');
 
 
-Route::group(['middleware' => 'jwt.verify'], function () {
+ Route::group(['middleware' => 'jwt.verify'], function () {
   Route::get('/auth/current',  'AuthController@getCurrentUser');
   Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'UserController@showAll');
     Route::get('/{id}', 'UserController@get');
     Route::post('/add', 'UserController@add');
     Route::post('/update', 'UserController@update');
-    Route::post('/delete', 'UserController@delete');
+    Route::post('/delete/{id}', 'UserController@delete');
   });
 
   Route::post('/payments/intent',  'PaymentController@createPaymentIntent');
   Route::post('/payments/confirm', 'PaymentController@confirmReservation');
 });
 
-//Tests
 
-Route::get('reservations' , 'ReservationController@getFutureReservations');
 

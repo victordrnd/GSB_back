@@ -55,15 +55,6 @@ class AuthController extends Controller
     $password = $request->password;
     $request->merge(['password' => Hash::make($password)]);
     $user = User::create($request->all());
-    $customer = \Stripe\Customer::create([
-      "email" => $user->email,
-      "name" => $user->lastname . ' ' . $user->firstname,
-      "phone" => $user->phone,
-      "description" => "Compte ".$user->country
-    ]);
-    $user->stripe_id = $customer->id;
-    $user->save();
-    //$user->createAsStripeCustomer();
 
     $credentials = [
       'email' => $request->email,

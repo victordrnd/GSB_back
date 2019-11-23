@@ -4,26 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\Response\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 Use App\Services\UserService;
 
 class UserController extends Controller
 {
 
-  private $userService;
-
-  public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
-
   /**
   * Return all users from users table
   * @return array
   */
   public static function showAll(){
-    return JsonResponse::setData(User::with('projects')->get());
+    return Controller::responseJson(200, "Les utisateurs ont bien été retournés" , User::all());
   }
 
 
@@ -41,9 +33,9 @@ class UserController extends Controller
       $user = User::where('id', $id)->with(['projects', 'projects.status'])->firstOrFail();
 
     }catch(ModelNotFoundException $e){
-      return JsonResponse::exception($e);
+      return Controller::responseJson(404, "L'utilisateur demandé n'existe pas", $e->getMessage());
     }
-    return JsonResponse::setData($user);
+    return Controller::responseJson(200, "L'utilisateur a bien été retourné" , $user);
   }
 
 
@@ -62,16 +54,14 @@ class UserController extends Controller
   * @return array
   */
   public function update(Request $request){
-    //return User::find(3);
     try{
-      $data = User::findOrFail($request->id);
+      $user = User::findOrFail($request->id);
     }
     catch(ModelNotFoundException $e){
       return JsonResponse::exception($e);
     }
-    $data->parseUserUpdateRequect($request);
-    $data->save();
-    return JsonResponse::setData(User::find($request->id));
+    $user->update($request->all());
+    return Controller::responseJson(200, "L'utilisateur a bien été mis à jour" , User::find($request->id));
   }
 
 
@@ -81,8 +71,8 @@ class UserController extends Controller
   * @param int $id
   * @return void
   */
-  public static function delete(DeleteUserRequest $request){
-    User::destroy($request->id);
-    return JsonResponse::setMessage('Done.');
+  public static function delete($id){
+    User::destroy($id);
+    return Controller::responseJson(200, "L'utilisateur a correctement été sauvegardé");
   }
 }

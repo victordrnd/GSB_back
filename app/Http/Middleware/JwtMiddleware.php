@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use JWTAuth;
 use Closure;
 use Exception;
-use App\Response\JsonResponse;
+use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
 class JwtMiddleware
@@ -22,11 +22,11 @@ class JwtMiddleware
     try {
       $user = JWTAuth::parseToken()->authenticate();
     } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-      return JsonResponse::exception($e);
+      return Controller::responseJson(401, $e->getMessage());
     } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-      return JsonResponse::exception($e);
+      return Controller::responseJson(401, $e->getMessage());
     } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-      return JsonResponse::exception($e);
+      return Controller::responseJson(401, $e->getMessage());
     }
     return $next($request);
   }
