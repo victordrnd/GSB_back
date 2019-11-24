@@ -30,7 +30,7 @@ class UserController extends Controller
   */
   public static function get($id){
     try{
-      $user = User::where('id', $id)->with(['projects', 'projects.status'])->firstOrFail();
+      $user = User::where('id', $id)->firstOrFail();
 
     }catch(ModelNotFoundException $e){
       return Controller::responseJson(404, "L'utilisateur demandé n'existe pas", $e->getMessage());

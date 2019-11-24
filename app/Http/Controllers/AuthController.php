@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Stripe;
 
 class AuthController extends Controller
 {
@@ -19,8 +17,8 @@ class AuthController extends Controller
       'password' => 'required|string',
     ]);
     if ($validator->fails()) {
-      //return Controller::responseJson(422, 'test',$validator->errors());
-      return $this->validationError($validator);
+      return Controller::responseJson(422, 'Une erreur est survenue',$validator->errors());
+      //return $this->validationError($validator);
     }
     $credentials = $request->only(['email', 'password']);
     if (!$token = auth()->attempt($credentials)) {
@@ -41,16 +39,10 @@ class AuthController extends Controller
       'lastname' => 'required|string',
       'email' => 'required|unique:users,email|email',
       'password' => 'required|string',
-      'phone' => 'required|string',
-      'country' => 'required|string'
+      'phone' => 'string'
     ]);
     if ($validator->fails()) {
-      //return Controller::responseJson(422, 'test',$validator->errors());
-      $errors = [
-        'errors' => $validator->errors(),
-        'message' => 'erreur de validation'
-      ];
-      return response()->json($errors);
+      return Controller::responseJson(422, 'Certains champs sont manquants',$validator->errors());
     }
     $password = $request->password;
     $request->merge(['password' => Hash::make($password)]);
@@ -67,12 +59,15 @@ class AuthController extends Controller
       'user' => auth()->user(),
       'token' => $token,
     ];
-    return $this->responseJson(Controller::$HTTP_OK, 'Identifiants valides', $data);
+    return $this->responseJson(Controller::$HTTP_OK, "L'enregistrement a réussi", $data);
   }
 
 
   public function getCurrentUser()
   {
-    return auth()->user();
+    $data =  [
+      'user' => auth()->user()
+    ];
+    return Controller::responseJson(200, "L'utilisateur a été retourné" , $data);
   }
 }
