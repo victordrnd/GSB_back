@@ -15,10 +15,10 @@ class Frais extends Model
     }
 
     public function type(){
-        return $this->hasOne(Type::class);
+        return $this->belongsTo(Type::class);
     }
 
     public function status(){
-        return $this->hasOne(Status::class);
+        return $this->belongsTo(Status::class);
     }
 }

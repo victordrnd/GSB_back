@@ -35,7 +35,7 @@ Route::post('auth/login',      'AuthController@login');
   Route::group(['prefix' => 'frais'], function(){
     Route::get('/', 'FraisController@getAll');
     Route::get('/show/{id}', 'FraisController@getFrais');
-    Route::get('/my', 'FraisCountroller@getMyFrais');
+    Route::get('/my', 'FraisController@getMyFrais');
     Route::get('/my/count', 'FraisController@getCountByDate');
     Route::post('/create', 'FraisController@createFrais');
   });

@@ -39,7 +39,7 @@ class FraisController extends Controller
 
 
     public function getMyFrais(){
-        $frais = Frais::where('user_id', auth()->user()->id)->get();
+        $frais = Frais::where('user_id', auth()->user()->id)->with('type', 'status')->get();
         return Controller::responseJson(200, "Vos frais ont été retourné", $frais);
     }
 
