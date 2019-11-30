@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\ApiRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateFraisRequest extends FormRequest
+class CreateFraisRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +27,7 @@ class CreateFraisRequest extends FormRequest
         return [
             'montant' => 'numeric|required',
             'description' => 'string',
-            'type_id' => 'integer|required'
+            'type_id' => 'integer|required',
         ];
     }
 }

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Frais;
 use App\Http\Requests\CreateFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
 
 class FraisController extends Controller
 {
@@ -29,12 +31,18 @@ class FraisController extends Controller
 
     public function createFrais(CreateFraisRequest $req)
     {
+        $name = null;
+        if($req->input('photo', false)){
+            $name = 'frais-'.time().'.png';
+            Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
+        }
         $frais = Frais::create([
             'montant' => $req->montant,
             'description' => $req->input('description'),
             'user_id' => auth()->user()->id,
             'type_id' => $req->type_id,
-            'status_id' => 1
+            'status_id' => 1,
+            'photo_url' => $name
         ]);
         return Controller::responseJson(200, "Le frais a correctement été crée", $frais);
     }
@@ -63,7 +71,7 @@ class FraisController extends Controller
         try{
 
             Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->update($req->only('description', 'montant'));
-            $frais = Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->firstOrFail();
+            $frais = Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
         }catch(ModelNotFoundException $e){
             return Controller::responseJson(404, "Le frais n'a pas pu être mis à jour");
         }
@@ -74,10 +82,11 @@ class FraisController extends Controller
     {
         try {
             $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->first();
-            $frais->delete();
         } catch (ModelNotFoundException $e) {
             return Controller::responseJson(404, "Le frais demandé n'existe pas ou ne vous appartient pas");
         }
+        Storage::delete("public/images/".$frais->photo_url);
+        $frais->delete();
         return Controller::responseJson(200, "Le frais a correctement été supprimé");
     }
 }

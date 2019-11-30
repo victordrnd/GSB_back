@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use JWTAuth;
 
 class AuthController extends Controller
 {
@@ -17,16 +18,16 @@ class AuthController extends Controller
       'password' => 'required|string',
     ]);
     if ($validator->fails()) {
-      return Controller::responseJson(422, 'Une erreur est survenue',$validator->errors());
-      //return $this->validationError($validator);
+      return Controller::responseJson(422, 'Une erreur est survenue', $validator->errors());
     }
     $credentials = $request->only(['email', 'password']);
-    if (!$token = auth()->attempt($credentials)) {
+    if (!$token = auth()->setTTL(525600)->attempt($credentials)) {
       return $this->responseJson(Controller::$HTTP_UNAUTHORIZED, 'Les identifiants sont incorrects');
     }
     $data =  [
       'user' => auth()->user(),
       'token' => $token,
+      'expire' => auth()->factory()->getTTL() * 60
     ];
     return $this->responseJson(200, 'Identifiants valides', $data);
   }
@@ -42,7 +43,7 @@ class AuthController extends Controller
       'phone' => 'string'
     ]);
     if ($validator->fails()) {
-      return Controller::responseJson(422, 'Certains champs sont manquants',$validator->errors());
+      return Controller::responseJson(422, 'Certains champs sont manquants', $validator->errors());
     }
     $password = $request->password;
     $request->merge(['password' => Hash::make($password)]);
@@ -52,7 +53,7 @@ class AuthController extends Controller
       'email' => $request->email,
       'password' =>  $password
     ];
-    if (!$token = auth()->attempt($credentials)) {
+    if (!$token = auth()->setTTL(525600)->attempt($credentials)) {
       return $this->responseJson(Controller::$HTTP_NOK, 'Les identifiants sont incorrects');
     }
     $data =  [
@@ -68,6 +69,6 @@ class AuthController extends Controller
     $data =  [
       'user' => auth()->user()
     ];
-    return Controller::responseJson(200, "L'utilisateur a été retourné" , $data);
+    return Controller::responseJson(200, "L'utilisateur a été retourné", $data);
   }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Frais extends Model
 {
     
-    protected $fillable = ['montant', 'description', 'user_id', 'type_id', 'status_id', 'validated_by'];
+    protected $fillable = ['montant', 'description', 'user_id', 'type_id', 'status_id', 'validated_by', 'photo_url'];
 
 
     public function user(){
