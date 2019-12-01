@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\ApiRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
-class CreateFraisRequest extends ApiRequest
+class UpdateFraisRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +23,9 @@ class CreateFraisRequest extends ApiRequest
     public function rules()
     {
         return [
+            'id' => 'required|integer|exists:frais',
             'montant' => 'numeric|required',
-            'description' => 'string|required',
-            'type_id' => 'integer|required|exists:types,id'
+            'description' => 'string|required'
         ];
     }
 }

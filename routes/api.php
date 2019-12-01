@@ -41,9 +41,6 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
   });
-
-  Route::post('/payments/intent',  'PaymentController@createPaymentIntent');
-  Route::post('/payments/confirm', 'PaymentController@confirmReservation');
 });
 
 

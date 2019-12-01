@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Frais;
 use App\Http\Requests\CreateFraisRequest;
+use App\Http\Requests\UpdateFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 
 class FraisController extends Controller
@@ -36,14 +36,18 @@ class FraisController extends Controller
             $name = 'frais-'.time().'.png';
             Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
         }
-        $frais = Frais::create([
-            'montant' => $req->montant,
-            'description' => $req->input('description'),
-            'user_id' => auth()->user()->id,
-            'type_id' => $req->type_id,
-            'status_id' => 1,
-            'photo_url' => $name
-        ]);
+        try{
+            $frais = Frais::create([
+                'montant' => $req->montant,
+                'description' => $req->input('description'),
+                'user_id' => auth()->user()->id,
+                'type_id' => $req->type_id,
+                'status_id' => 1,
+                'photo_url' => $name
+            ]);
+        }catch(Exception $e){
+            return Controller::responseJson(422, "Une erreur est survenue");
+        }
         return Controller::responseJson(200, "Le frais a correctement été crée", $frais);
     }
 
@@ -66,10 +70,9 @@ class FraisController extends Controller
         return Controller::responseJson(200, "Succes", $fraisCount);
     }
 
-    public function updateMyFrais(Request $req)
+    public function updateMyFrais(UpdateFraisRequest $req)
     {
         try{
-
             Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->update($req->only('description', 'montant'));
             $frais = Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
         }catch(ModelNotFoundException $e){
