@@ -38,7 +38,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/my', 'FraisController@getMyFrais');
     Route::get('/my/count', 'FraisController@getCountByDate');
     Route::post('/my/update', 'FraisController@updateMyFrais');
-    Route::get('my/delete/{id}', 'FraisController@deleteMyFrais');
+    Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
   });
 });

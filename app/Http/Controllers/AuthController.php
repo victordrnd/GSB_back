@@ -7,7 +7,6 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use JWTAuth;
 
 class AuthController extends Controller
 {

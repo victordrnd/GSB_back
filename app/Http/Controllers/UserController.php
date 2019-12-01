@@ -73,6 +73,6 @@ class UserController extends Controller
   */
   public static function delete($id){
     User::destroy($id);
-    return Controller::responseJson(200, "L'utilisateur a correctement été sauvegardé");
+    return Controller::responseJson(200, "L'utilisateur a correctement été supprimé");
   }
 }

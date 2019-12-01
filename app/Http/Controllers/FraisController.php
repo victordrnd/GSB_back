@@ -31,7 +31,7 @@ class FraisController extends Controller
 
     public function createFrais(CreateFraisRequest $req)
     {
-        $name = null;
+        $name = "";
         if($req->input('photo', false)){
             $name = 'frais-'.time().'.png';
             Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
@@ -84,7 +84,7 @@ class FraisController extends Controller
     public function deleteMyFrais($id)
     {
         try {
-            $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->first();
+            $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return Controller::responseJson(404, "Le frais demandé n'existe pas ou ne vous appartient pas");
         }

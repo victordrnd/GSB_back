@@ -22,7 +22,7 @@ class CreateFraisTable extends Migration
             $table->integer('status_id')->unsigned()->index()->nullable();
             $table->integer('validated_by')->unsigned()->index()->nullable();
 
-            $table->foreign('user_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
             $table->foreign('validated_by')->references('id')->on('users')->onDelete('cascade');
             
