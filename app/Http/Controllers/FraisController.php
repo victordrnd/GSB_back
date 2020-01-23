@@ -8,14 +8,21 @@ use App\Http\Requests\CreateFraisRequest;
 use App\Http\Requests\UpdateFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use App\Services\FraisService;
 
 class FraisController extends Controller
 {
+    protected $fraisService;
+
+     
+    public function __construct(FraisService $fraisService){
+        $this->fraisService = $fraisService;
+    }
 
     public function getFrais($id)
     {
         try {
-            $frais = Frais::findOrFail($id);
+            $frais = $this->fraisService::find($id);
         } catch (ModelNotFoundException $e) {
             return Controller::responseJson(404, "Le frais $id n'existe pas", $e->getMessage());
         }
@@ -24,28 +31,16 @@ class FraisController extends Controller
 
     public function getAll()
     {
-        $frais = Frais::all();
+        $frais = $this->fraisService::getAll();
         return Controller::responseJson(200, "Les frais ont été retournés", $frais);
     }
 
 
     public function createFrais(CreateFraisRequest $req)
     {
-        $name = "";
-        if($req->input('photo', false)){
-            $name = 'frais-'.time().'.png';
-            Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
-        }
         try{
-            $frais = Frais::create([
-                'montant' => $req->montant,
-                'description' => $req->input('description'),
-                'user_id' => auth()->user()->id,
-                'type_id' => $req->type_id,
-                'status_id' => 1,
-                'photo_url' => $name
-            ]);
-        }catch(Exception $e){
+           $frais = $this->fraisService::create($req);
+        }catch(\Exception $e){
             return Controller::responseJson(422, "Une erreur est survenue");
         }
         return Controller::responseJson(200, "Le frais a correctement été crée", $frais);
@@ -54,27 +49,21 @@ class FraisController extends Controller
 
     public function getMyFrais()
     {
-        $frais = Frais::where('user_id', auth()->user()->id)->with('type', 'status')->orderBy('created_at', 'desc')->get();
+        $frais =$this->fraisService::getMyFrais();
         return Controller::responseJson(200, "Vos frais ont été retourné", $frais);
     }
 
 
     public function getCountByDate()
     {
-        $fraisCount = Frais::where('user_id', auth()->user()->id)
-            ->groupBy(\DB::raw('DATE(created_at)'))
-            ->orderBy('date', 'DESC')->get(array(
-                \DB::raw('DATE(created_at) as date'),
-                \DB::raw('COUNT(*) as count')
-            ));
+        $fraisCount = $this->fraisService::getCountByDate();
         return Controller::responseJson(200, "Succes", $fraisCount);
     }
 
     public function updateMyFrais(UpdateFraisRequest $req)
     {
         try{
-            Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->update($req->only('description', 'montant'));
-            $frais = Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
+            $frais = $this->fraisService::updateMyFrais($req);
         }catch(ModelNotFoundException $e){
             return Controller::responseJson(404, "Le frais n'a pas pu être mis à jour");
         }
@@ -84,12 +73,10 @@ class FraisController extends Controller
     public function deleteMyFrais($id)
     {
         try {
-            $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+            $frais = $this->fraisService::deleteMyFrais($id);
         } catch (ModelNotFoundException $e) {
             return Controller::responseJson(404, "Le frais demandé n'existe pas ou ne vous appartient pas");
         }
-        Storage::delete("public/images/".$frais->photo_url);
-        $frais->delete();
         return Controller::responseJson(200, "Le frais a correctement été supprimé");
     }
 }
