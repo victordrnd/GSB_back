@@ -41,6 +41,10 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
   });
+
+  Route::group(['prefix' => 'activity'], function(){
+    Route::get('/', 'ActivityController@getAll');
+  });
 });
 
 

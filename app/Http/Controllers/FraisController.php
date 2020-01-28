@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FraisService;
-
+use Spatie\Activitylog\Models\Activity;
 class FraisController extends Controller
 {
     protected $fraisService;

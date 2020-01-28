@@ -52,7 +52,7 @@ class FraisService
 
     public static function updateMyFrais(Request $req)
     {
-        Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->update($req->only('description', 'montant'));
+        Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->first()->update($req->only('description', 'montant'));
         return Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
     }
 

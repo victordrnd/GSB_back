@@ -6,13 +6,15 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
-        "fideloper/proxy": "~3.3",
-        "guzzlehttp/guzzle": "^6.3",
+        "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.0",
         "intervention/image": "^2.5",
-        "laravel/framework": "5.5.*",
+        "laravel/framework": "6.*",
         "laravel/tinker": "~1.0",
+        "nesbot/carbon": "^2",
+        "spatie/laravel-activitylog": "^3.9",
         "stripe/stripe-php": "^6.43",
-        "tymon/jwt-auth": "1.0.0-rc.4"
+        "tymon/jwt-auth": "1.0.0-rc.5"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
