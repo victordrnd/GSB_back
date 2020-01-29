@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Frais;
 use App\Http\Requests\CreateFraisRequest;
 use App\Http\Requests\UpdateFraisRequest;
+use App\Http\Requests\StatusFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FraisService;
@@ -68,6 +69,16 @@ class FraisController extends Controller
             return Controller::responseJson(404, "Le frais n'a pas pu être mis à jour");
         }
         return Controller::responseJson(200, "Le frais a correctement été mis à jour", $frais);
+    }
+
+
+    public function changeStatus(StatusFraisRequest $req){
+        try{
+            $frais = $this->fraisService::changeStatus($req);
+        }catch(ModelNotFoundException $e){
+            return Controller::responseJson(404, "Le frais n'a pas pu être mis à jour");
+        }
+        return Controller::responseJson(200, "Le frais a correctement été validé", $frais);
     }
 
     public function deleteMyFrais($id)

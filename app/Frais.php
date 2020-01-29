@@ -12,6 +12,8 @@ class Frais extends Model
     protected static $recordEvents = ['created', 'updated'];
     protected static $logName = 'system';
     protected static $ignoreChangedAttributes = ['montant', 'description', 'user_id', 'type_id', 'photo_url', 'updated_at'];
+    
+    
     public function user(){
         return $this->belongsTo(User::class);
     }

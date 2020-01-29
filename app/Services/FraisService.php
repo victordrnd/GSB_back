@@ -56,6 +56,13 @@ class FraisService
         return Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
     }
 
+    public static function changeStatus(Request $req){
+        $frais = Frais::find($req->frais_id)->update([
+            'status_id' => $req->status_id
+        ]);
+        return Frais::where('id', $req->frais_id)->with('type', 'status')->first();
+    }
+
     public static function deleteMyFrais($id)
     {
         $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();

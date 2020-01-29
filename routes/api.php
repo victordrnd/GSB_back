@@ -40,6 +40,8 @@ Route::post('auth/login',      'AuthController@login');
     Route::post('/my/update', 'FraisController@updateMyFrais');
     Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
+    //Web Route
+    Route::post('/update/status', 'FraisController@changeStatus');
   });
 
   Route::group(['prefix' => 'activity'], function(){
