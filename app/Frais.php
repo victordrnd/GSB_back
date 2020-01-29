@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Victordrnd\Activitylog\Traits\LogsActivity;
 class Frais extends Model
 {
     use LogsActivity;
