@@ -47,6 +47,10 @@ Route::post('auth/login',      'AuthController@login');
   Route::group(['prefix' => 'activity'], function(){
     Route::get('/', 'ActivityController@getAll');
   });
+
+  Route::group(['prefix' => 'status'], function(){
+    Route::get('/', 'StatusController@getAll');
+  });
 });
 
 
