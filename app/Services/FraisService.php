@@ -9,7 +9,7 @@ class FraisService
 {
     public static function getAll()
     {
-        return Frais::all();
+        return Frais::orderBy('created_at', 'DESC')->with('status', 'type')->get();
     }
 
     public static function find($id)

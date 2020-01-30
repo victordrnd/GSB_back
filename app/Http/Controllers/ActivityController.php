@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use Victordrnd\Activitylog\Models\Activity;
+use App\Activity;
 use Illuminate\Http\Request;
-
 class ActivityController extends Controller
 {
     public function getAll(){
-
-        $activities = Activity::orderBy('created_at', 'DESC')->with('causer', 'subject', 'subject.type', 'subject.status', 'subject.user')->get();
+        $activities = Activity::orderBy('created_at', 'DESC')
+            ->get()->map->format();
         return Controller::responseJson(200, "Les activités récentes ont été retournées", $activities);
     }
+    
 }

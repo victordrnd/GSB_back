@@ -5,10 +5,12 @@ namespace App;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Victordrnd\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable implements JWTSubject
 {
   use Notifiable;
+  use LogsActivity;
   /**
    * The attributes that are mass assignable.
    *
@@ -17,7 +19,11 @@ class User extends Authenticatable implements JWTSubject
   protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone', 'country'];
 
   protected $hidden = ['password'];
-
+  protected static $logFillable = true;
+  protected static $recordEvents = ['created', 'updated'];
+  protected static $logName = 'system';
+  protected static $ignoreChangedAttributes = ['fistname', 'lastname', 'email', 'phone', 'country'];
+  
 
 
 
