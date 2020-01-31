@@ -9,12 +9,12 @@ class FraisService
 {
     public static function getAll()
     {
-        return Frais::orderBy('created_at', 'DESC')->with('status', 'type')->get();
+        return Frais::orderBy('created_at', 'DESC')->get()->map->format();
     }
 
     public static function find($id)
     {
-        return Frais::findOrFail($id);
+        return Frais::where('id',$id)->first()->format();
     }
 
     public static function create(Request $req)
@@ -58,8 +58,10 @@ class FraisService
 
     public static function changeStatus(Request $req){
         $frais = Frais::find($req->frais_id)->update([
-            'status_id' => $req->status_id
+            'status_id' => $req->status_id,
+            'validated_by' => auth()->user()->id
         ]);
+
         return Frais::where('id', $req->frais_id)->with('type', 'status')->first();
     }
 

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Victordrnd\Activitylog\Traits\LogsActivity;
+use Carbon\Carbon;
 class Frais extends Model
 {
     use LogsActivity;
@@ -24,5 +25,25 @@ class Frais extends Model
 
     public function status(){
         return $this->belongsTo(Status::class);
+    }
+
+    public function validator(){
+        return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    public function format(){
+        Carbon::setLocale('fr');
+        return [
+            'id' => $this->id,
+            'montant' => $this->montant,
+            'description' =>  $this->description,
+            'photo_url' => $this->photo_url,
+            'validated_by' => $this->validator,
+            'user' => $this->user,
+            'type' => $this->type,
+            'status' => $this->status,
+            'created_at' => $this->created_at->toDateTimeString(),
+            'last_update' => $this->created_at->diffForHumans()
+        ];
     }
 }
