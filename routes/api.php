@@ -40,6 +40,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::post('/my/update', 'FraisController@updateMyFrais');
     Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
+    Route::get('/stats',   'FraisController@stats');
     //Web Route
     Route::post('/update/status', 'FraisController@changeStatus');
   });

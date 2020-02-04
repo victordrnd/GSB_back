@@ -25,7 +25,7 @@ class StatusFraisRequest extends ApiRequest
     {
         return [
             'status_id' => 'integer|exists:statuses,id|required',
-            'frais_id' => 'integer|exists:frais,id|required'
+            'id' => 'integer|exists:frais,id|required'
         ];
     }
 }

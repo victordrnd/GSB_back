@@ -4,6 +4,12 @@ namespace App\Services;
 
 use App\Frais;
 use Illuminate\Http\Request;
+use DB;
+use Illuminate\Support\Facades\Storage;
+use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
+use LaravelFCM\Message\PayloadNotificationBuilder;
+use FCM;
 
 class FraisService
 {
@@ -14,7 +20,7 @@ class FraisService
 
     public static function find($id)
     {
-        return Frais::where('id',$id)->first()->format();
+        return Frais::find($id)->format();
     }
 
     public static function create(Request $req)
@@ -32,6 +38,7 @@ class FraisService
                 'status_id' => 1,
                 'photo_url' => $name
             ]);
+
         return $frais;
     }
 
@@ -56,13 +63,24 @@ class FraisService
         return Frais::where('id', $req->id)->where('user_id', auth()->user()->id)->with('type', 'status')->firstOrFail();
     }
 
-    public static function changeStatus(Request $req){
-        $frais = Frais::find($req->frais_id)->update([
+    public static function changeStatus(Request $req)
+    {
+        $frais = Frais::find($req->id)->update([
             'status_id' => $req->status_id,
             'validated_by' => auth()->user()->id
         ]);
+        $frais = Frais::findOrFail($req->id)->format();
 
-        return Frais::where('id', $req->frais_id)->with('type', 'status')->first();
+        $option = (new OptionsBuilder())->build();
+        $notificationBuilder = new PayloadNotificationBuilder('Votre frais a été '.$frais->status->libelle);
+        $notificationBuilder->setBody(auth()->user()->firstname .' '. auth()->user()->lastname." a mis à jour le status du frais n°".$req->id." que vous avez créé")
+                    ->setSound('default');
+
+        $notification = $notificationBuilder->build();
+        $token = $frais->user->token;
+        $downstreamResponse = FCM::sendTo($token, $option, $notification);
+
+        return $frais;
     }
 
     public static function deleteMyFrais($id)
@@ -70,5 +88,21 @@ class FraisService
         $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         Storage::delete("public/images/".$frais->photo_url);
         $frais->delete();
+    }
+
+
+
+    public static function stats()
+    {
+        $total = Frais::count();
+        $done = Frais::select(DB::raw('count(*) as count'))->where('status_id', '!=', 1)->first();
+        $stats = Frais::select('status_id', DB::raw('count(*) as count'))->with('status')->groupBy('status_id')->get();
+        return [
+            'total' => $total,
+            'done' => $done->count,
+            'percentage' => round(($done->count / $total) * 100),
+            'stats' => $stats
+            
+        ];
     }
 }

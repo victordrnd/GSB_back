@@ -90,4 +90,10 @@ class FraisController extends Controller
         }
         return Controller::responseJson(200, "Le frais a correctement été supprimé");
     }
+
+
+    public function stats(){
+        $stats = $this->fraisService::stats();
+        return Controller::responseJson(200, "Les statistiques ont été retournées", $stats);
+    }
 }

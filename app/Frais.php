@@ -42,6 +42,7 @@ class Frais extends Model
             'user' => $this->user,
             'type' => $this->type,
             'status' => $this->status,
+            'status_id' => $this->status->id,
             'created_at' => $this->created_at->toDateTimeString(),
             'last_update' => $this->created_at->diffForHumans()
         ];
