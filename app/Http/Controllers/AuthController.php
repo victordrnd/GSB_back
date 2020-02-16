@@ -15,6 +15,7 @@ class AuthController extends Controller
     $validator  = Validator::make($request->all(), [
       'email' => 'required|exists:users,email|email',
       'password' => 'required|string',
+      'fcm_token' => 'sometimes|string'
     ]);
     if ($validator->fails()) {
       return Controller::responseJson(422, 'Une erreur est survenue', $validator->errors());
@@ -22,6 +23,11 @@ class AuthController extends Controller
     $credentials = $request->only(['email', 'password']);
     if (!$token = auth()->setTTL(525600)->attempt($credentials)) {
       return $this->responseJson(Controller::$HTTP_UNAUTHORIZED, 'Les identifiants sont incorrects');
+    }
+    if($request->has('fcm_token')){
+      $user = User::where('email', $request->email)->first();
+      $user->fcm_token = $request->fcm_token;
+      $user->save();
     }
     $data =  [
       'user' => auth()->user(),
@@ -39,7 +45,8 @@ class AuthController extends Controller
       'lastname' => 'required|string',
       'email' => 'required|unique:users,email|email',
       'password' => 'required|string',
-      'phone' => 'string'
+      'phone' => 'string',
+      'fcm_token' => 'required|string'
     ]);
     if ($validator->fails()) {
       return Controller::responseJson(422, 'Certains champs sont manquants', $validator->errors());

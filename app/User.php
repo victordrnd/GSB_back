@@ -16,13 +16,13 @@ class User extends Authenticatable implements JWTSubject
    *
    * @var array
    */
-  protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone', 'avatar'];
+  protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone','fcm_token', 'avatar'];
 
   protected $hidden = ['password'];
   protected static $logFillable = true;
   protected static $recordEvents = ['created', 'updated'];
   protected static $logName = 'system';
-  protected static $ignoreChangedAttributes = ['fistname', 'lastname', 'email', 'phone', 'avatar'];
+  protected static $ignoreChangedAttributes = ['fistname', 'lastname', 'email', 'phone','fcm_token', 'avatar'];
   
 
 

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class Activity extends ActivityModel
 {
+    protected $table = 'activity_log';
     public function format(){
         Carbon::setLocale('fr');
         return [

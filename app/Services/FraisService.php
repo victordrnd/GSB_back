@@ -28,7 +28,7 @@ class FraisService
         $name = "";
         if ($req->input('photo', false)) {
             $name = 'frais-'.time().'.png';
-            Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
+            $test = Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
         }
         $frais = Frais::create([
                 'montant' => $req->montant,
@@ -69,18 +69,18 @@ class FraisService
             'status_id' => $req->status_id,
             'validated_by' => auth()->user()->id
         ]);
-        $frais = Frais::findOrFail($req->id)->format();
+        $frais = Frais::findOrFail($req->id);
 
         $option = (new OptionsBuilder())->build();
         $notificationBuilder = new PayloadNotificationBuilder('Votre frais a été '.$frais->status->libelle);
-        $notificationBuilder->setBody(auth()->user()->firstname .' '. auth()->user()->lastname." a mis à jour le status du frais n°".$req->id." que vous avez créé")
+        $notificationBuilder->setBody(auth()->user()->firstname .' '. auth()->user()->lastname." a mis à jour le status de votre frais de ".$frais->type->libelle. " vers ".$frais->status->libelle)
                     ->setSound('default');
 
         $notification = $notificationBuilder->build();
-        $token = $frais->user->token;
+        $token = $frais->user->fcm_token;
         $downstreamResponse = FCM::sendTo($token, $option, $notification);
 
-        return $frais;
+        return $frais->format();
     }
 
     public static function deleteMyFrais($id)
