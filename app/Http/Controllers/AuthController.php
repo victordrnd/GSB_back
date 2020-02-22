@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use App\NotificationGroup;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -25,12 +26,24 @@ class AuthController extends Controller
       return $this->responseJson(Controller::$HTTP_UNAUTHORIZED, 'Les identifiants sont incorrects');
     }
     if($request->has('fcm_token')){
-      $user = User::where('email', $request->email)->first();
-      $user->fcm_token = $request->fcm_token;
-      $user->save();
+      $user = User::where('email', $request->email)->first()->update([
+        'fcm_token' => $request->fcm_token
+      ]);
     }
+    if($request->has('web_fcm_token') && $request->filled('web_fcm_token')){
+      $user = User::where('email', $request->email)->first();
+      if($user->web_fcm_token != $request->web_fcm_token){
+        $user->web_fcm_token = $request->web_fcm_token;
+        $user->save();
+        $group = NotificationGroup::find(1);
+        \FCMGroup::addToGroup($group->libelle, $group->notification_key, [$request->web_fcm_token]);
+      }
+    }
+    $user = User::where('id',auth()->user()->id)->first();
+    $user['permissions'] = $user->role->permissions()->pluck('slug');
+    unset($user['role']['permissions']);
     $data =  [
-      'user' => auth()->user(),
+      'user' => $user,
       'token' => $token,
       'expire' => auth()->factory()->getTTL() * 60
     ];
@@ -53,7 +66,11 @@ class AuthController extends Controller
     }
     $password = $request->password;
     $request->merge(['password' => Hash::make($password)]);
-    $user = User::create($request->all());
+  
+    $user = new User();
+    $user->fill($request->all());
+    $user->role_id = 1;
+    $ser->save();
 
     $credentials = [
       'email' => $request->email,

@@ -16,26 +16,31 @@ class User extends Authenticatable implements JWTSubject
    *
    * @var array
    */
-  protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone','fcm_token', 'avatar'];
+  protected $fillable = ['firstname', 'lastname', 'email', 'password', 'phone', 'fcm_token','web_fcm_token', 'avatar', 'role_id'];
 
   protected $hidden = ['password'];
   protected static $logFillable = true;
-  protected static $recordEvents = ['created', 'updated'];
+  protected static $recordEvents = ['created'];
   protected static $logName = 'system';
-  protected static $ignoreChangedAttributes = ['fistname', 'lastname', 'email', 'phone','fcm_token', 'avatar'];
-  
+  protected static $ignoreChangedAttributes = ['fistname', 'lastname', 'email', 'phone', 'fcm_token','web_fcm_token', 'avatar', 'role_id', 'updated_at'];
 
 
 
-  public function frais(){
+  public function frais()
+  {
     return $this->hasMany(Frais::class);
   }
 
-  public function roles(){
-    return $this->belongsToMany(Role::class , 'user_role');
+  public function role()
+  {
+    return $this->belongsTo(Role::class, 'role_id');
   }
 
-  
+  public function hasPermission($permission)
+  {
+    return $this->role->permissions->contains('slug', $permission);
+  }
+
 
 
 
@@ -57,8 +62,4 @@ class User extends Authenticatable implements JWTSubject
   {
     return [];
   }
-
-  
-
-
 }

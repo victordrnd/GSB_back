@@ -54,6 +54,7 @@ class UserController extends Controller
   * @return array
   */
   public function update(Request $request){
+    //TODO : check if role_id change to add to fcm corresponding group and remove from old 
     try{
       $user = User::findOrFail($request->id);
     }

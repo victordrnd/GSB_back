@@ -41,8 +41,8 @@ class FraisController extends Controller
     {
         try{
            $frais = $this->fraisService::create($req);
-        }catch(\Exception $e){
-            return Controller::responseJson(422, "Une erreur est survenue");
+         }catch(\Exception $e){
+             return Controller::responseJson(422, "Une erreur est survenue");
         }
         return Controller::responseJson(200, "Le frais a correctement été crée", $frais);
     }

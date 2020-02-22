@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Frais;
+use App\NotificationGroup;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -38,6 +39,16 @@ class FraisService
                 'status_id' => 1,
                 'photo_url' => $name
             ]);
+        //Gestion des notifications
+        $notificationBuilder = new PayloadNotificationBuilder('GSB : Nouvelle demande de frais');
+        $text = auth()->user()->firstname . " ". auth()->user()->lastname." a réalisé une nouvelle demande de frais";
+        $notificationBuilder->setBody($text)
+                            ->setSound('default')
+                            ->setClickAction("http://localhost:4200/frais/".$frais->id);
+            
+        $notification = $notificationBuilder->build();
+        $group = NotificationGroup::find(1);
+        FCM::sendToGroup($group->notification_key,null,$notification,null);
 
         return $frais;
     }
