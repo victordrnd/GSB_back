@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\NotificationGroup;
+use App\NotificationGroupMember;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -37,6 +38,7 @@ class AuthController extends Controller
         $user->save();
         $group = NotificationGroup::find(1);
         \FCMGroup::addToGroup($group->libelle, $group->notification_key, [$request->web_fcm_token]);
+        NotificationGroupMember::create($group->id, $user->id);
       }
     }
     $user = User::where('id',auth()->user()->id)->first();
@@ -59,7 +61,7 @@ class AuthController extends Controller
       'email' => 'required|unique:users,email|email',
       'password' => 'required|string',
       'phone' => 'string',
-      'fcm_token' => 'required|string'
+      'fcm_token' => 'sometimes|string'
     ]);
     if ($validator->fails()) {
       return Controller::responseJson(422, 'Certains champs sont manquants', $validator->errors());
@@ -70,7 +72,7 @@ class AuthController extends Controller
     $user = new User();
     $user->fill($request->all());
     $user->role_id = 1;
-    $ser->save();
+    $user->save();
 
     $credentials = [
       'email' => $request->email,
@@ -79,6 +81,7 @@ class AuthController extends Controller
     if (!$token = auth()->setTTL(525600)->attempt($credentials)) {
       return $this->responseJson(Controller::$HTTP_NOK, 'Les identifiants sont incorrects');
     }
+    
     $data =  [
       'user' => auth()->user(),
       'token' => $token,

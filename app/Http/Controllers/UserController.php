@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 Use App\Services\UserService;
+use App\Http\Resources\User as UserRessource;
 
 class UserController extends Controller
 {
@@ -14,12 +15,11 @@ class UserController extends Controller
   * Return all users from users table
   * @return array
   */
-  public static function showAll(){
-    return Controller::responseJson(200, "Les utisateurs ont bien été retournés" , User::all());
+  public function showAll(){
+    $users = User::with('role')->get();
+    $users = UserRessource::collection($users);
+    return Controller::responseJson(200, "Les utisateurs ont bien été retournés" , $users);
   }
-
-
-
 
 
 
@@ -28,19 +28,15 @@ class UserController extends Controller
   * @param int $id
   * @return array
   */
-  public static function get($id){
+  public function find($id){
     try{
-      $user = User::where('id', $id)->firstOrFail();
-
+      $user = User::findOrFail($id)->load('frais', 'activities');
+      $user = new UserRessource($user);
     }catch(ModelNotFoundException $e){
       return Controller::responseJson(404, "L'utilisateur demandé n'existe pas", $e->getMessage());
     }
     return Controller::responseJson(200, "L'utilisateur a bien été retourné" , $user);
   }
-
-
-
-
 
 
 
@@ -72,7 +68,7 @@ class UserController extends Controller
   * @param int $id
   * @return void
   */
-  public static function delete($id){
+  public function delete($id){
     User::destroy($id);
     return Controller::responseJson(200, "L'utilisateur a correctement été supprimé");
   }

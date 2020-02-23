@@ -36,6 +36,15 @@ class User extends Authenticatable implements JWTSubject
     return $this->belongsTo(Role::class, 'role_id');
   }
 
+  public function groupes(){
+    return $this->belongsToMany(NotificationGroup::class, 'notification_group_members', 'user_id', 'group_id');
+  }
+
+  public function activities()
+  {
+    return $this->hasMany(Activity::class, 'causer_id');
+  }
+
   public function hasPermission($permission)
   {
     return $this->role->permissions->contains('slug', $permission);

@@ -17,7 +17,6 @@ class Activity extends ActivityModel
             'subject' => $this->subject_type == 'App\\Frais' ? $this->subject->load('status', 'type') : $this->subject,
             'subject_type' => $this->subject_type == 'App\\Frais' ? 'frais' : 'user',
             'causer' => $this->causer,
-            //'properties' => $this->properties,
             'created_at' => $this->created_at->toDateTimeString(),
             'last_updated' => $this->created_at->diffForHumans()
         ];
