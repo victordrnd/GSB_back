@@ -14,9 +14,9 @@ use FCM;
 
 class FraisService
 {
-    public static function getAll()
+    public static function getAll($req)
     {
-        return Frais::orderBy('created_at', 'DESC')->get()->map->format();
+        return Frais::search($req)->orderBy('created_at', 'DESC')->get()->map->format();
     }
 
     public static function find($id)
@@ -49,7 +49,6 @@ class FraisService
         $notification = $notificationBuilder->build();
         $group = NotificationGroup::find(1);
         FCM::sendToGroup($group->notification_key,null,$notification,null);
-
         return $frais;
     }
 
@@ -67,6 +66,11 @@ class FraisService
                 \DB::raw('COUNT(*) as count')
             ));
     }
+
+
+
+
+
 
     public static function updateMyFrais(Request $req)
     {

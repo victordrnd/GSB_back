@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 Use App\Services\UserService;
 use App\Http\Resources\User as UserRessource;
+use App\Role;
 
 class UserController extends Controller
 {
@@ -15,8 +16,8 @@ class UserController extends Controller
   * Return all users from users table
   * @return array
   */
-  public function showAll(){
-    $users = User::with('role')->get();
+  public function showAll(Request $req){
+    $users = User::search($req)->with('role')->get();
     $users = UserRessource::collection($users);
     return Controller::responseJson(200, "Les utisateurs ont bien été retournés" , $users);
   }
@@ -49,16 +50,17 @@ class UserController extends Controller
   * @param date $birth_date
   * @return array
   */
-  public function update(Request $request){
+  public function update($id,Request $request){
     //TODO : check if role_id change to add to fcm corresponding group and remove from old 
     try{
-      $user = User::findOrFail($request->id);
+      $user = User::findOrFail($id);
     }
     catch(ModelNotFoundException $e){
       return JsonResponse::exception($e);
     }
-    $user->update($request->all());
-    return Controller::responseJson(200, "L'utilisateur a bien été mis à jour" , User::find($request->id));
+    $user->fill($request->all());
+    $user->save();
+    return Controller::responseJson(200, "L'utilisateur a bien été mis à jour" , User::find($user->id));
   }
 
 
@@ -71,5 +73,11 @@ class UserController extends Controller
   public function delete($id){
     User::destroy($id);
     return Controller::responseJson(200, "L'utilisateur a correctement été supprimé");
+  }
+
+
+  public function getAllRoles(){
+    $roles = Role::all();
+    return Controller::responseJson(200, "Les roles ont été retournés", $roles);
   }
 }

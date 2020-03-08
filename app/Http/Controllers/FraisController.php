@@ -10,6 +10,7 @@ use App\Http\Requests\StatusFraisRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FraisService;
+use App\Type;
 use Victordrnd\Activitylog\Models\Activity;
 class FraisController extends Controller
 {
@@ -30,9 +31,9 @@ class FraisController extends Controller
         return Controller::responseJson(200, "Le frais $id a été retourné", $frais);
     }
 
-    public function getAll()
+    public function getAll(Request $req)
     {
-        $frais = $this->fraisService::getAll();
+        $frais = $this->fraisService::getAll($req);
         return Controller::responseJson(200, "Les frais ont été retournés", $frais);
     }
 
@@ -61,6 +62,11 @@ class FraisController extends Controller
         return Controller::responseJson(200, "Succes", $fraisCount);
     }
 
+
+    public function update(Frais $frais, Request $req){
+        $frais = $this->fraisService::update($frais, $req);
+        return Controller::responseJson(200, "L'utilisateur a été mis à jour", $frais);
+    }
     public function updateMyFrais(UpdateFraisRequest $req)
     {
         try{
@@ -95,5 +101,10 @@ class FraisController extends Controller
     public function stats(){
         $stats = $this->fraisService::stats();
         return Controller::responseJson(200, "Les statistiques ont été retournées", $stats);
+    }
+
+
+    public function getAllTypes(){
+        return Controller::responseJson(200, "Les frais ont été retourné", Type::all());
     }
 }

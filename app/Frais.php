@@ -47,4 +47,23 @@ class Frais extends Model
             'last_update' => $this->created_at->diffForHumans()
         ];
     }
+
+
+    public function scopeSearch($q, $req){
+        if($req->has('type_id') && $req->filled('type_id')){
+            $q->where('type_id', $req->type_id);
+        }
+        if($req->has('dateRange')){
+            if(!empty($req->dateRange)){
+                $start = Carbon::parse($req->dateRange[0]);
+                //Add 1 day because front send with 00:00:00
+                $end = (new Carbon($req->dateRange[1]))->addDay();
+                $q->whereBetween('created_at', [$start, $end]);
+            }
+        }
+        if($req->has('user_id') && $req->filled('user_id')){
+            $q->where('user_id', $req->user_id);
+        }
+
+    }
 }

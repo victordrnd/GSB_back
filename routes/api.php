@@ -24,16 +24,16 @@ Route::post('auth/login',      'AuthController@login');
   Route::get('/auth/current',  'AuthController@getCurrentUser');
 
   Route::group(['prefix' => 'users'], function () {
-    Route::get('/', 'UserController@showAll');
+    Route::post('/', 'UserController@showAll');
     Route::get('/{id}', 'UserController@find');
     Route::post('/add', 'UserController@add');
-    Route::post('/update', 'UserController@update');
+    Route::post('/{id}', 'UserController@update');
     Route::post('/delete/{id}', 'UserController@delete');
   });
 
 
   Route::group(['prefix' => 'frais'], function(){
-    Route::get('/', 'FraisController@getAll');
+    Route::post('/', 'FraisController@getAll');
     Route::get('/show/{id}', 'FraisController@getFrais');
     Route::get('/my', 'FraisController@getMyFrais');
     Route::get('/my/count', 'FraisController@getCountByDate');
@@ -41,6 +41,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
     Route::get('/stats',   'FraisController@stats');
+    Route::get('/types',   'FraisController@getAllTypes');
     //Web Route
     Route::post('/update/status', 'FraisController@changeStatus');
   });
@@ -52,6 +53,8 @@ Route::post('auth/login',      'AuthController@login');
   Route::group(['prefix' => 'status'], function(){
     Route::get('/', 'StatusController@getAll');
   });
+
+  Route::get('roles', 'UserController@getAllRoles');
 });
 
 

@@ -51,9 +51,6 @@ class User extends Authenticatable implements JWTSubject
   }
 
 
-
-
-
   /**
    * The attributes that should be hidden for arrays.
    *
@@ -70,5 +67,18 @@ class User extends Authenticatable implements JWTSubject
   public function getJWTCustomClaims()
   {
     return [];
+  }
+
+
+  public function scopeSearch($q, $req){
+    if($req->has('keyword') && $req->input("keyword", false)){
+      $keyword = $req->keyword;
+      $q->where('firstname','like', "%$keyword%")
+        ->orWhere('lastname', "like", "%$keyword%")
+        ->orWhere('email',  'like',  "%$keyword%");
+    }
+    if($req->has('role_id') && $req->filled('role_id')){
+      $q->where('role_id', $req->role_id);
+    }
   }
 }
