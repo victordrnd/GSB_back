@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Activity;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -71,7 +72,12 @@ class UserController extends Controller
   * @return void
   */
   public function delete($id){
-    User::destroy($id);
+    $user = User::find($id);
+    $user->activities()->delete();
+    Activity::where('subject_id', $user->id)->where('subject_type', User::class)->delete();
+    $user->frais()->delete();
+    $user->groupes()->delete();
+    $user->delete();
     return Controller::responseJson(200, "L'utilisateur a correctement été supprimé");
   }
 

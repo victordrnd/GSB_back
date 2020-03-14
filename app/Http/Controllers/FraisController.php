@@ -103,6 +103,10 @@ class FraisController extends Controller
         return Controller::responseJson(200, "Les statistiques ont été retournées", $stats);
     }
 
+    public function groupByType(){
+        $types = $this->fraisService::groupByType();
+        return Controller::responseJson(200, "Les statistiques ont été retournées", $types);
+    }
 
     public function getAllTypes(){
         return Controller::responseJson(200, "Les frais ont été retourné", Type::all());

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Frais;
 use App\NotificationGroup;
+use App\Type;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -119,5 +120,16 @@ class FraisService
             'stats' => $stats
             
         ];
+    }
+
+
+    public static function groupByType(){
+        return Type::all()->map(function($el) {
+            return [
+                'name' => $el->libelle,
+                'value' => Frais::where('type_id', $el->id)->count()
+            ];
+        });
+        
     }
 }

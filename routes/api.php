@@ -28,7 +28,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/{id}', 'UserController@find');
     Route::post('/add', 'UserController@add');
     Route::post('/{id}', 'UserController@update');
-    Route::post('/delete/{id}', 'UserController@delete');
+    Route::delete('/delete/{id}', 'UserController@delete');
   });
 
 
@@ -41,6 +41,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
     Route::post('/create', 'FraisController@createFrais');
     Route::get('/stats',   'FraisController@stats');
+    Route::get('/types/count', 'FraisController@groupByType');
     Route::get('/types',   'FraisController@getAllTypes');
     //Web Route
     Route::post('/update/status', 'FraisController@changeStatus');

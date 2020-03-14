@@ -37,8 +37,11 @@ class AuthController extends Controller
         $user->web_fcm_token = $request->web_fcm_token;
         $user->save();
         $group = NotificationGroup::find(1);
-        \FCMGroup::addToGroup($group->libelle, $group->notification_key, [$request->web_fcm_token]);
-        NotificationGroupMember::create($group->id, $user->id);
+        \FCMGroup::addToGroup($group->slug, $group->notification_key, [$request->web_fcm_token]);
+        NotificationGroupMember::create([
+          'group_id' =>$group->id,
+          'user_id' => $user->id
+          ]);
       }
     }
     $user = User::where('id',auth()->user()->id)->first();
