@@ -14,18 +14,18 @@ class StatusTableSeeder extends Seeder
     {
         Status::create([
             'libelle' => 'En attente',
-            'color' => '#fbc02d'
+            'color' => 'orange'
         ]);
 
 
         Status::create([
             'libelle' => 'Validé',
-            'color' => '#00e676'
+            'color' => 'purple'
         ]);
 
         Status::create([
             'libelle' => 'Refusé',
-            'color' => '#f44336'
+            'color' => 'volcano'
         ]);
     }
 }

@@ -26,7 +26,7 @@ class PermissionSeeder extends Seeder
 
         // Frais personnel
         Permission::create([
-            'libelle' => 'Afficher mes frais personnels',
+            'libelle' => 'Afficher les frais personnels',
             'slug' => 'my.frais.view'
         ]);
 
@@ -71,5 +71,11 @@ class PermissionSeeder extends Seeder
             'slug' => 'my.frais.create'
         ]);
 
+        //gestion des permissions
+
+        Permission::create([
+            'libelle' => 'Administration des permissions',
+            'slug' => 'permissions.edit'
+        ]);
     }
 }

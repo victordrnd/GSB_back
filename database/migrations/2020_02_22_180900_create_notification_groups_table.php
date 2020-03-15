@@ -17,7 +17,7 @@ class CreateNotificationGroupsTable extends Migration
             $table->increments('id');
             $table->string('libelle');
             $table->string('slug');
-            $table->string('notication_key');
+            $table->string('notification_key');
             $table->timestamps();
         });
     }

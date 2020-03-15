@@ -23,6 +23,10 @@ class DatabaseSeeder extends Seeder
           TypeTableSeeder::class
         ]);
 
+        $this->call([PermissionSeeder::class]);
+        $this->call([RolePermissionSeedeer::class]);
+        $this->call([NotificationGroupSeeder::class]);
+
         
     }
 }

@@ -22,7 +22,7 @@ Route::post('auth/login',      'AuthController@login');
 
  Route::group(['middleware' => 'jwt.verify'], function () {
   Route::get('/auth/current',  'AuthController@getCurrentUser');
-
+  Route::get('/auth/permissions', 'AuthController@currentUserPermission');
   Route::group(['prefix' => 'users'], function () {
     Route::post('/', 'UserController@showAll');
     Route::get('/{id}', 'UserController@find');
@@ -55,7 +55,9 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/', 'StatusController@getAll');
   });
 
-  Route::get('roles', 'UserController@getAllRoles');
+  Route::group(['prefix' => 'roles'], function () {
+    Route::get('/', 'RoleController@getAllRoles');
+  });
 });
 
 

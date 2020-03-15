@@ -93,6 +93,13 @@ class AuthController extends Controller
   }
 
 
+  public function currentUserPermission(){
+    $user = auth()->user();
+    $permissions = $user->role->permissions->pluck('slug');
+    return Controller::responseJson(200, "Les permissions ont été retournées", $permissions);
+  }
+
+
   public function getCurrentUser()
   {
     $data =  [

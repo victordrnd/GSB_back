@@ -97,6 +97,10 @@ class RolePermissionSeedeer extends Seeder
             'permission_id' => 9,
             'role_id' => 5
         ]);
+        RolePermission::create([
+            'permission_id' => 11,
+            'role_id' => 5
+        ]);
 
     }
 }
