@@ -116,7 +116,7 @@ class FraisService
         return [
             'total' => $total,
             'done' => $done->count,
-            'percentage' => round(($done->count / $total) * 100),
+            'percentage' => round(($done->count / ($total ?: 1)) * 100),
             'stats' => $stats
             
         ];
