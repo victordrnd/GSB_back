@@ -21,28 +21,34 @@ Route::post('auth/login',      'AuthController@login');
 
 
  Route::group(['middleware' => 'jwt.verify'], function () {
+
+
   Route::get('/auth/current',  'AuthController@getCurrentUser');
   Route::get('/auth/permissions', 'AuthController@currentUserPermission');
+
+
+
   Route::group(['prefix' => 'users'], function () {
-    Route::post('/', 'UserController@showAll');
+    Route::post('/', 'UserController@showAll')->middleware('can:users.view');
     Route::get('/{id}', 'UserController@find');
-    Route::post('/add', 'UserController@add');
-    Route::post('/{id}', 'UserController@update');
-    Route::delete('/delete/{id}', 'UserController@delete');
+    //Route::post('/add', 'UserController@add')->middleware('can:users.create');
+    Route::post('/{id}', 'UserController@update')->middleware('can:users.edit');
+    Route::delete('/delete/{id}', 'UserController@delete')->middleware('can:users.delete');
   });
 
 
   Route::group(['prefix' => 'frais'], function(){
-    Route::post('/', 'FraisController@getAll');
+    Route::post('/', 'FraisController@getAll')->middleware('can:frais.view');
     Route::get('/show/{id}', 'FraisController@getFrais');
-    Route::get('/my', 'FraisController@getMyFrais');
-    Route::get('/my/count', 'FraisController@getCountByDate');
-    Route::post('/my/update', 'FraisController@updateMyFrais');
-    Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais');
-    Route::post('/create', 'FraisController@createFrais');
+    Route::get('/my', 'FraisController@getMyFrais')->middleware('can:my.frais.view');
+    Route::get('/my/count', 'FraisController@getCountByDate')->middleware('can:my.frais.view');
+    Route::post('/my/update', 'FraisController@updateMyFrais')->middleware('can:my.frais.edit');
+    Route::get('/my/delete/{id}', 'FraisController@deleteMyFrais')->middleware('can:my.frais.delete');
+    Route::post('/create', 'FraisController@createFrais')->middleware('can:my.frais.create');
     Route::get('/stats',   'FraisController@stats');
     Route::get('/types/count', 'FraisController@groupByType');
     Route::get('/types',   'FraisController@getAllTypes');
+
     //Web Route
     Route::post('/update/status', 'FraisController@changeStatus');
   });
