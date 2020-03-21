@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Frais;
 use App\NotificationGroup;
 use App\Type;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Storage;
@@ -113,12 +115,30 @@ class FraisService
         $total = Frais::count();
         $done = Frais::select(DB::raw('count(*) as count'))->where('status_id', '!=', 1)->first();
         $stats = Frais::select('status_id', DB::raw('count(*) as count'))->with('status')->groupBy('status_id')->get();
+        $period = CarbonPeriod::create(Carbon::now()->subMonths(3), Carbon::now());
+        $count_by_date = [];
+        foreach($period as $day){
+            $count = Frais::where(\DB::raw('DATE(created_at)'), $day->format('Y-m-d'))
+                ->first([DB::raw('COUNT(*) as "count"')])->count;
+            $count_by_date[] = $count;
+        }
+        // $count_by_date = Frais::where('created_at', '>=',Carbon::now()->subMonths(3))
+        //                         ->groupBy(\DB::raw('DATE(created_at)'))
+        //                         ->get([DB::raw('COUNT(*) as "count"')]);
+
+        // $count_by_date = $count_by_date->map(function($item){
+        //     return $item->count;
+        // });
         return [
             'total' => $total,
             'done' => $done->count,
             'percentage' => round(($done->count / ($total ?: 1)) * 100),
-            'stats' => $stats
-            
+            'stats' => $stats,
+            "by_date" => [
+                'from' => Carbon::now()->subMonths(3)->format('Y-m-d'),
+                'to' => Carbon::now()->format('Y-m-d'),
+                'values' => $count_by_date
+            ]
         ];
     }
 

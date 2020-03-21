@@ -63,6 +63,9 @@ Route::post('auth/login',      'AuthController@login');
 
   Route::group(['prefix' => 'roles'], function () {
     Route::get('/', 'RoleController@getAllRoles');
+
+    Route::post('/{id}/add',  'RoleController@addPermissionsToRole')->where('id', '[0-9]+');;
+    Route::post('/{id}/remove',  'RoleController@removePermissionsToRole')->where('id', '[0-9]+');;
   });
 });
 
