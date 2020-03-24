@@ -49,7 +49,7 @@ Route::post('auth/login',      'AuthController@login');
     Route::get('/types/count', 'FraisController@groupByType');
     Route::get('/types',   'FraisController@getAllTypes');
 
-    //Web Route
+    Route::post('/export',  'FraisController@export');
     Route::post('/update/status', 'FraisController@changeStatus');
   });
 

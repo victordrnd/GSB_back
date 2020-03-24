@@ -108,7 +108,17 @@ class FraisService
         $frais->delete();
     }
 
+    public function export($from, $to, $user_id = false){
 
+        $q = Frais::query();
+        $q->where('created_at', '>=', $from)->where('created_at', '<=', $to)
+                        ->where('status_id', 2);
+        $q->when($user_id, function($q1) use ($user_id){
+            $q1->where('user_id', $user_id);
+        });
+        $frais = $q->with('status', 'type', 'validator')->get();
+        return $frais;
+    }
 
     public static function stats()
     {
@@ -122,13 +132,6 @@ class FraisService
                 ->first([DB::raw('COUNT(*) as "count"')])->count;
             $count_by_date[] = $count;
         }
-        // $count_by_date = Frais::where('created_at', '>=',Carbon::now()->subMonths(3))
-        //                         ->groupBy(\DB::raw('DATE(created_at)'))
-        //                         ->get([DB::raw('COUNT(*) as "count"')]);
-
-        // $count_by_date = $count_by_date->map(function($item){
-        //     return $item->count;
-        // });
         return [
             'total' => $total,
             'done' => $done->count,

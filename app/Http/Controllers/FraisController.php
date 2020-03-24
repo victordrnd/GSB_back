@@ -98,6 +98,15 @@ class FraisController extends Controller
     }
 
 
+    public function export(Request $req){
+        if($req->user_id){
+            $frais = $this->fraisService->export($req->from, $req->to, $req->user_id);
+        }else{
+            $frais = $this->fraisService->export($req->from, $req->to);
+        }
+        return Controller::responseJson(200, "Les frais ont été exportés", $frais);
+    }
+
     public function stats(){
         $stats = $this->fraisService::stats();
         return Controller::responseJson(200, "Les statistiques ont été retournées", $stats);
