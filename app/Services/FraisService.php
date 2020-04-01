@@ -105,6 +105,7 @@ class FraisService
     {
         $frais = Frais::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
         Storage::delete("public/images/".$frais->photo_url);
+        Activity::where('subject_id', $id)->where('subject_type', Frais::class)->delete();
         $frais->delete();
     }
 

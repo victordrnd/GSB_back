@@ -29,7 +29,7 @@ Route::post('auth/login',      'AuthController@login');
 
 
   Route::group(['prefix' => 'users'], function () {
-    Route::post('/', 'UserController@showAll')->middleware('can:users.view');
+    Route::post('/', 'UserController@showAll');//->middleware('can:users.view');
     Route::get('/{id}', 'UserController@find');
     //Route::post('/add', 'UserController@add')->middleware('can:users.create');
     Route::post('/{id}', 'UserController@update')->middleware('can:users.edit');

@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject
 
   public function activities()
   {
-    return $this->hasMany(Activity::class, 'causer_id');
+    return $this->hasMany(Activity::class, 'causer_id')->where('subject_type', Frais::class);
   }
 
   public function hasPermission($permission)

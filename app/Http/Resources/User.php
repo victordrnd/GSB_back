@@ -38,7 +38,7 @@ class User extends JsonResource
             })) / $this->frais->count() * 100) : 100,
             'groups_count' => $this->groupes->count(),
             'groups' => $this->groupes,
-            'activities' => $this->relationLoaded('activities') ? $this->whenLoaded('activities')->map->format() : null,
+            'activities' => $this->activities->map->format(),
             'created_at' => $this->created_at->toDateTimeString()
         ];
     }
