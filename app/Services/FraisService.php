@@ -19,7 +19,7 @@ class FraisService
 {
     public static function getAll($req)
     {
-        return Frais::search($req)->orderBy('created_at', 'DESC')->get()->map->format();
+        return Frais::search($req)->orderBy($req->order_by ?? "created_at", 'DESC')->get()->map->format();
     }
 
     public static function find($id)
