@@ -32,7 +32,7 @@ class FraisService
         $name = "";
         if ($req->input('photo', false)) {
             $name = 'frais-'.time().'.png';
-            $test = Storage::disk('local')->put("public/images/$name", base64_decode($req->photo));
+            $test = Storage::disk('azure')->put("$name", base64_decode($req->photo));
         }
         $frais = Frais::create([
                 'montant' => $req->montant,
